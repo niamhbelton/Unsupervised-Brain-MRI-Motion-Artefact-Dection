@@ -3,7 +3,7 @@
 ## Installation 
 
 ```
-git clone https://github.com/niamhbelton/Unsupervised-Motion-Artefact-Detection.git
+git clone https://github.com/niamhbelton/Unsupervised-Brain-MRI-Motion-Artefact-Detection.git
 ```
 
 ## Data 
