@@ -1,7 +1,5 @@
 # Unsupervised-Brain-MRI-Motion-Artefact-Dection
 
-# Unsupervised-Motion-Artefact-Detection
-
 ## Installation 
 
 ```
