@@ -7,7 +7,7 @@ git clone https://github.com/niamhbelton/Unsupervised-Brain-MRI-Motion-Artefact-
 ```
 
 ## Data 
-Each model was run for five seeds, The folder metadata contains the train-test splits for both datasets for each train set size and each seed for sampling the train set, named as 'df_seed_<seed>_n_<train_set_size>'. The files in the 'MR-ART' dataset indicate the subject ID for the training set but it specifies the complete MRI name for the validation data.
+Each model was run for five seeds, The folder metadata contains the train-test splits for both datasets for each train set size and each seed for sampling the train set, named as 'df_seed_<seed>_n\_<train_set_size>'. The files in the 'MR-ART' dataset indicate the subject ID for the training set but it specifies the complete MRI name for the validation data.
 
 ### MR-ART
 * Download the data from the following link; https://openneuro.org/datasets/ds004173/versions/1.0.2
