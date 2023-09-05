@@ -4,7 +4,7 @@ if __name__ == '__main__':
    commands = []
    seeds = [1001, 3472, 128037, 875688, 71530]
    ns = [10,20, 30]
-   lr = 1e-3
+   lr = 1e-4
    alp = 0
    for seed in seeds:
       for n in ns:
