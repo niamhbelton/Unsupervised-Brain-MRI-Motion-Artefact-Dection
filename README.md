@@ -17,12 +17,14 @@ The folder metadata contains the train-test splits for both datasets for each tr
 * To generate the synthetic artefacts for the IXI dataset; 
   * download the T2 images from the following link; https://brain-development.org/ixi-dataset/
   * modify the file paths 'genDir' and 't2Path' in data_prep/MotionUtils/GenerateMotion.py to the directory where you want to store the generated files and the directory where original data is. Code originally from; https://github.com/antecessor/MRI_Motion_Classification/tree/master/Utils/MotionUtils.
-  * change the directory paths in the data_prep/move_ixi_files_to_directories.ipynb notebook and run the code to split the generated data into directories 'anom' and 'normal'
-  
+  * run the below code to generate the motion artefacts
 ```
 cd <Unsupervised-Motion-Artefact-Detection/data_prep/MotionUtils>
 python3 GenerateMotion.py
 ```
+  * change the directory paths in the data_prep/move_ixi_files_to_directories.ipynb notebook and run the code to split the generated data into directories 'anom' and 'normal'
+  
+
 
 
 
