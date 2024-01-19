@@ -406,14 +406,16 @@ if __name__ == '__main__':
     #create directories
     if not os.path.exists('outputs'):
         os.makedirs('outputs')
-    if not os.path.exists('outputs/models'):
-        os.makedirs('outputs/models')
+
+    if not os.path.exists('outputs/' + dataset_name):
+        os.makedirs('outputs/' + dataset_name)
 
 
-    if not os.path.exists('outputs/ED'):
-        os.makedirs('outputs/ED')
+    if not os.path.exists('outputs/' + dataset_name + '/ED'):
+        os.makedirs('outputs/' + dataset_name + '/ED')
 
-
+    if not os.path.exists('outputs/'+ dataset_name + '/models'):
+        os.makedirs('outputs/' + dataset_name + '/models')
 
 
     #Initialise the model
