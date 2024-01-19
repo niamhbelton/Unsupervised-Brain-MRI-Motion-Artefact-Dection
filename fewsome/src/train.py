@@ -234,16 +234,16 @@ def train(model, lr, weight_decay, train_dataset, val_dataset, epochs, criterion
             val_loss, val_auc, f1, acc,df, acc_sev, wck, sprc, inf_times, total_times = evaluate(anchor, freeze, seed, base_ind, train_dataset, val_dataset, model, dataset_name,  model_name, indexes, data_path, criterion, alpha, num_ref_eval,  args.device)
             train_aucs.append(val_auc)
             model_name_temp = model_name + '_epoch_' + str(epoch+1) + '_val_auc_' + str(np.round(val_auc, 3))
-            for f in os.listdir('./outputs/models/'):
+            for f in os.listdir('./outputs/' + dataset_name + '/models/'):
               if (model_name in f) :
-                  os.remove(f'./outputs/models/{f}')
-            torch.save(model.state_dict(), './outputs/models/' + model_name_temp)
+                  os.remove(f'./outputs/' + dataset_name + '/models/{f}')
+            torch.save(model.state_dict(), './outputs/' + dataset_name + '/models/' + model_name_temp)
 
 
-            for f in os.listdir('./outputs/ED/'):
+            for f in os.listdir('./outputs/' + dataset_name + '/ED/'):
               if (model_name in f) :
-                  os.remove(f'./outputs/ED/{f}')
-            df.to_csv('./outputs/ED/' +model_name_temp)
+                  os.remove(f'./outputs/' + dataset_name + '/ED/{f}')
+            df.to_csv('./outputs/' + dataset_name + '/ED/' +model_name_temp)
 
 
 
@@ -255,7 +255,7 @@ def train(model, lr, weight_decay, train_dataset, val_dataset, epochs, criterion
             except:
                 info = pd.DataFrame([params], columns = cols)
 
-            info.to_csv('./outputs/'+ model_name)
+            info.to_csv('./outputs/' + dataset_name + '/'+ model_name)
 
             print("Epoch: {}, Validation AUC {}, Validation loss: {}".format(epoch+1, val_auc, val_loss))
 
