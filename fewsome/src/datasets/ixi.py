@@ -36,9 +36,7 @@ class ixi(data.Dataset):
         train_files = np.array(normals_ids)[ind] #names of training
 
         check = pd.read_csv(data_split_path + 'df_seed_' + str(seed) + '_n_' +str(N))
-        for f in train_files:
-            assert f in list(check['file'].loc[check['split'] =='train']
-)
+        train_files = check['file'].loc[check['split'] =='train']
 
 
         if task =='train':
