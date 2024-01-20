@@ -14,18 +14,18 @@ from scipy import stats
 
 
 
-def create_df_of_dists(labels, labels_sev, minimum_dists, means, dataset_name, num_ref_eval, outs):
+def create_df_of_dists(labels, labels_sev, minimum_dists, means, dataset_name, num_ref_eval, outs, file_names):
 
     '''create a dataframe where each row represents an image from the test set with columns for the ground truth labels, the minimum ed to the reference set,
     #the mean ed to the reference set and the distances to each feature vector in the reference set.'''
 
 
     if dataset_name =='mrart':
-        cols = ['label','label_sev','minimum_dists', 'means']
-        df = pd.concat([pd.DataFrame(labels, columns = ['label']), pd.DataFrame(labels_sev, columns = ['label_sev']),  pd.DataFrame(minimum_dists, columns = ['minimum_dists']),  pd.DataFrame(means, columns = ['means'])], axis =1)
+        cols = ['file','label','label_sev','minimum_dists', 'means']
+        df = pd.concat([pd.DataFrame(file_names, columns = ['file_names']), pd.DataFrame(labels, columns = ['label']), pd.DataFrame(labels_sev, columns = ['label_sev']),  pd.DataFrame(minimum_dists, columns = ['minimum_dists']),  pd.DataFrame(means, columns = ['means'])], axis =1)
     else:
-        cols = ['label','minimum_dists', 'means']
-        df = pd.concat([pd.DataFrame(labels, columns = ['label']), pd.DataFrame(minimum_dists, columns = ['minimum_dists']),  pd.DataFrame(means, columns = ['means'])], axis =1)
+        cols = ['file','label','minimum_dists', 'means']
+        df = pd.concat([pd.DataFrame(file_names, columns = ['file_names']),  pd.DataFrame(labels, columns = ['label']), pd.DataFrame(minimum_dists, columns = ['minimum_dists']),  pd.DataFrame(means, columns = ['means'])], axis =1)
 
     for i in range(0, num_ref_eval):
         df= pd.concat([df, pd.DataFrame(outs['dist_from_ref_vec_{}'.format(i)])], axis =1)
@@ -47,7 +47,7 @@ def create_dict_ref_vecs(ref_dataset, num_ref_eval, anchor, model, freeze, base_
     #loop through the reference images and 1) get the reference image from the dataloader, 2) get the feature vector for the reference image and 3) initialise the values of the 'out' dictionary as a list.
     with torch.no_grad():
         for i in ind:
-          img1, _, lab, _ ,_= ref_dataset.__getitem__(i)
+          img1, _, lab, _ ,_,_= ref_dataset.__getitem__(i)
 
           if (i == base_ind) & (freeze == True):
             ref_images['images{}'.format(i)] = anchor.to(dev)
@@ -77,6 +77,7 @@ def evaluate(anchor, freeze , seed, base_ind, ref_dataset, val_dataset, model, d
     loss_sum =0
     inf_times=[]
     total_times= []
+    file_names = []
 
     #loop through images in the dataloader
     with torch.no_grad():
@@ -87,6 +88,7 @@ def evaluate(anchor, freeze , seed, base_ind, ref_dataset, val_dataset, model, d
             label = data[2].item()
             label_sev = data[4].item()
 
+            file_names.append(data[-1])
             labels.append(label)
             labels_sev.append(label_sev)
 
@@ -128,7 +130,7 @@ def evaluate(anchor, freeze , seed, base_ind, ref_dataset, val_dataset, model, d
 
     #create a dataframe where each row represents an image from the test set with columns for the ground truth labels, the minimum ed to the reference set,
     #the mean ed to the reference set and the distances to each feature vector in the reference set.
-    df=create_df_of_dists(labels, labels_sev, minimum_dists, means, dataset_name, num_ref_eval, outs)
+    df=create_df_of_dists(labels, labels_sev, minimum_dists, means, dataset_name, num_ref_eval, outs, file_names)
 
     #calculate AUC
     fpr, tpr, thresholds = roc_curve(np.array(df['label']),np.array(df['minimum_dists']))
