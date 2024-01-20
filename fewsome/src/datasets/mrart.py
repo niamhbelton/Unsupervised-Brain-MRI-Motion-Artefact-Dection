@@ -116,4 +116,4 @@ class MRART(data.Dataset):
             label = target
 
 
-        return img, img2, label, base, int(self.targets_sev[index])
+        return img, img2, label, base, int(self.targets_sev[index]), file_path
