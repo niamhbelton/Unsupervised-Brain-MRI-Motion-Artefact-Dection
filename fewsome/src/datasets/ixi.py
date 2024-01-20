@@ -52,8 +52,8 @@ class ixi(data.Dataset):
 
             val = os.listdir(root + '/anom/')
             val_files = pd.DataFrame(val).iloc[:,0].apply(lambda x: x.split('_')[2]).drop_duplicates().reset_index(drop=True)
-            for f in val_files.tolist():
-                if f not in train_files:
+            for f in val_files:
+                if f not in train_files.tolist():
 
                     path_temp = []
                     for file in val:
@@ -68,8 +68,8 @@ class ixi(data.Dataset):
 
             val = os.listdir(root + '/normal/')
             val_files = pd.DataFrame(val).iloc[:,0].apply(lambda x: x.split('_')[2]).drop_duplicates().reset_index(drop=True)
-            for f in val_files.tolist():
-                if f not in train_files:
+            for f in val_files:
+                if f not in train_files.tolist():
                     path_temp = []
                     for file in val:
                         if f in file: #
