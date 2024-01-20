@@ -113,7 +113,7 @@ def train(model, lr, weight_decay, train_dataset, val_dataset, epochs, criterion
                 iterations+=1
                 seed = (epoch+1) * (i+1) * (batch_ind+1)
 
-                img1, img2, labels, base,_ = train_dataset.__getitem__(index, seed, base_ind)
+                img1, img2, labels, base,_,_ = train_dataset.__getitem__(index, seed, base_ind)
 
 
 
@@ -236,13 +236,13 @@ def train(model, lr, weight_decay, train_dataset, val_dataset, epochs, criterion
             model_name_temp = model_name + '_epoch_' + str(epoch+1) + '_val_auc_' + str(np.round(val_auc, 3))
             for f in os.listdir('./outputs/' + dataset_name + '/models/'):
               if (model_name in f) :
-                  os.remove(f'./outputs/' + dataset_name + '/models/{f}')
+                  os.remove('./outputs/' + dataset_name + '/models/' + f)
             torch.save(model.state_dict(), './outputs/' + dataset_name + '/models/' + model_name_temp)
 
 
             for f in os.listdir('./outputs/' + dataset_name + '/ED/'):
               if (model_name in f) :
-                  os.remove(f'./outputs/' + dataset_name + '/ED/{f}')
+                  os.remove('./outputs/' + dataset_name + '/ED/' + f)
             df.to_csv('./outputs/' + dataset_name + '/ED/' +model_name_temp)
 
 
@@ -297,7 +297,7 @@ def train(model, lr, weight_decay, train_dataset, val_dataset, epochs, criterion
 def init_feat_vec(model,base_ind, train_dataset ):
 
         model.eval()
-        anchor,_,_,_ ,_= train_dataset.__getitem__(base_ind)
+        anchor,_,_,_ ,_,_= train_dataset.__getitem__(base_ind)
         with torch.no_grad():
           anchor = model(anchor.to(args.device).float()).to(args.device)
 
