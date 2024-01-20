@@ -16,7 +16,7 @@ class ixi(data.Dataset):
 
 
 
-    def __init__(self, indexes, root: str, 
+    def __init__(self, indexes, root: str,
             task,  seed,N, data_split_path):
         super().__init__()
         self.paths = []
@@ -31,13 +31,10 @@ class ixi(data.Dataset):
         normals_ids.columns=['file']
         normals_ids=normals_ids.drop_duplicates().reset_index(drop=True)
 
-        random.seed(seed)
-        ind = random.sample(range(0, len(normals_ids)), N)
-        train_files = np.array(normals_ids)[ind] #names of training
+
 
         check = pd.read_csv(data_split_path + 'df_seed_' + str(seed) + '_n_' +str(N))
         train_files = check['file'].loc[check['split'] =='train']
-
 
         if task =='train':
             for i,f in enumerate(train_files):
@@ -55,7 +52,7 @@ class ixi(data.Dataset):
 
             val = os.listdir(root + '/anom/')
             val_files = pd.DataFrame(val).iloc[:,0].apply(lambda x: x.split('_')[2]).drop_duplicates().reset_index(drop=True)
-            for f in val_files:
+            for f in val_files.tolist():
                 if f not in train_files:
 
                     path_temp = []
@@ -71,7 +68,7 @@ class ixi(data.Dataset):
 
             val = os.listdir(root + '/normal/')
             val_files = pd.DataFrame(val).iloc[:,0].apply(lambda x: x.split('_')[2]).drop_duplicates().reset_index(drop=True)
-            for f in val_files:
+            for f in val_files.tolist():
                 if f not in train_files:
                     path_temp = []
                     for file in val:
@@ -141,4 +138,4 @@ class ixi(data.Dataset):
             img2 = torch.Tensor([1])
             label = target
 
-        return img, img2, label, base, 1
+        return img, img2, label, base, 1, paths[0].split('T2')[0]
