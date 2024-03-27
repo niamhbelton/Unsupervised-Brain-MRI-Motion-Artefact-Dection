@@ -24,12 +24,7 @@ class ixi(data.Dataset):
         self.indexes = []
         self.root_dir = root
         self.task = task
-        self.data=[]
         self.N =N
-        normals = os.listdir(root+ '/normal/')
-        normals_ids = pd.DataFrame(normals.copy()).iloc[:,0].apply(lambda x: x.split('_')[2])
-        normals_ids.columns=['file']
-        normals_ids=normals_ids.drop_duplicates().reset_index(drop=True)
 
 
 
@@ -38,45 +33,29 @@ class ixi(data.Dataset):
 
         if task =='train':
             for i,f in enumerate(train_files):
-                path_temp=[]
-                for file in normals:
-                    if  f in file.split('_')[2] : #
-                        path_temp.append(root+ '/normal/' + file)
-                self.paths.append(path_temp)
+                self.paths.append(root+ '/normal/' + f + '.nii.gz')
                 self.targets.append(torch.FloatTensor([0]))
-                self.data.append(f)
                 self.indexes.append(i)
 
         else:
 
 
             val = os.listdir(root + '/anom/')
-            val_files = pd.DataFrame(val).iloc[:,0].apply(lambda x: x.split('_')[2]).drop_duplicates().reset_index(drop=True)
+            val_files = pd.DataFrame(val).iloc[:,0].apply(lambda x: x.split('.nii.gz')[0]).drop_duplicates().reset_index(drop=True)
             for f in val_files:
                 if f not in train_files.tolist():
 
-                    path_temp = []
-                    for file in val:
-                        if f in file:
-                            path_temp.append(root+ '/anom/' + file)
-
-                    self.data.append(f)
-                    self.paths.append(path_temp)
+                    self.paths.append(root+ '/anom/' + f + '.nii.gz')
                     self.targets.append(torch.FloatTensor([1]))
 
 
 
             val = os.listdir(root + '/normal/')
-            val_files = pd.DataFrame(val).iloc[:,0].apply(lambda x: x.split('_')[2]).drop_duplicates().reset_index(drop=True)
+            val_files = pd.DataFrame(val).iloc[:,0].apply(lambda x: x.split('.nii.gz')[0]).drop_duplicates().reset_index(drop=True)
             for f in val_files:
                 if f not in train_files.tolist():
-                    path_temp = []
-                    for file in val:
-                        if f in file: #
-                            path_temp.append(root+ '/normal/' + file)
 
-                    self.data.append(f)
-                    self.paths.append(path_temp)
+                    self.paths.append(root+ '/normal/' + f + '.nii.gz')
                     self.targets.append(torch.FloatTensor([0]))
 
 
@@ -94,21 +73,19 @@ class ixi(data.Dataset):
         base=False
         target = self.targets[index]
         paths = self.paths[index]
-        images=[]
-        for i,file_path in enumerate(paths):
-            images.append(np.asarray(Image.open(file_path)))
 
-        img = np.stack(images, axis =0)
-        if img.shape[0] >= 20:
-            img = torch.FloatTensor(img)[10:30,:,:]
-        else:
-            img = torch.FloatTensor(img)
+
+        file_path = self.paths[index]
+        img = np.array(nib.load(file_path).get_fdata()) / 5012.0
+
+        img = torch.FloatTensor(img)[int(np.ceil(img.shape[0] /2 ) - 10) : int(np.ceil(img.shape[0] /2 ) + 10), : , : ]
+        assert img.shape[0] == 20
 
         img = torch.stack((img,img,img),1)
 
         if self.task == 'train':
             np.random.seed(seed)
-            ind = np.random.randint(len(self.data) )
+            ind = np.random.randint(len(self.indexes) )
             c=1
             while (ind == index):
                 np.random.seed(seed * c)
@@ -119,16 +96,10 @@ class ixi(data.Dataset):
               base = True
 
             target2 = int(self.targets[ind])
-            paths = self.paths[ind]
-            images=[]
-            for i,file_path in enumerate(paths):
-                images.append(np.asarray(Image.open(file_path)))
+            file_path2 = self.paths[ind]
+            img2 = np.array(nib.load(file_path2).get_fdata()) / 5012.0
 
-            img2 = np.stack(images, axis =0)
-            if img2.shape[0] >= 20:
-                img2 = torch.FloatTensor(img2)[10:30,:,:]
-            else:
-                img2 = torch.FloatTensor(img2)
+            img2 = torch.FloatTensor(img2)[int(np.ceil(img2.shape[0] /2 ) - 10) : int(np.ceil(img2.shape[0] /2 ) + 10), : , : ]
 
             img2 = torch.stack((img2,img2,img2),1)
 
@@ -139,3 +110,5 @@ class ixi(data.Dataset):
             label = target
 
         return img, img2, label, base, 1, paths[0].split('T2')[0]
+
+
