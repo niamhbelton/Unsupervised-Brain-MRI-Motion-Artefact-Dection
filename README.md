@@ -43,8 +43,8 @@ python3 run_mrart.py
 
 For each model, 
 * a file will be generated in the 'outputs' directory named according to model_name argument containing details of training and evaluation metrics
-* the euclidean distance for each test point to each reference vector is stored in 'ED/outputs/'
-* the final model is stored in 'outptus/models/'
+* the euclidean distance for each test point to each reference vector is stored in '/outputs/ED/'
+* the final model is stored in 'outputs/models/'
 
 
 ## References
